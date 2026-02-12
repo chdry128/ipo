@@ -1,0 +1,409 @@
+<!-- FILENAME: /result-checker.html -->
+<!DOCTYPE html>
+<html lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches) }" x-bind:class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Bulk IPO Result Checker - Check multiple BOID numbers at once for Nepal IPO allotment results. Fast and free tool for Nepal investors.">
+    <meta name="keywords" content="Nepal IPO result checker, BOID checker, IPO allotment, Nepal stock market">
+    <meta property="og:title" content="Bulk IPO Result Checker - Nepal IPO Hub">
+    <meta property="og:description" content="Check multiple BOID numbers for IPO allotment results instantly. Free bulk checker tool for Nepal investors.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://nepalipohub.pages.dev/og-image.png">
+    <meta property="og:url" content="https://nepalipohub.pages.dev/result-checker.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>Bulk IPO Result Checker - Nepal IPO Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 bg-white dark:bg-gray-800 shadow-md transition-colors duration-200" x-data="{ mobileMenuOpen: false }">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-xl font-bold text-blue-600 dark:text-blue-400">Nepal IPO Hub</a>
+                </div>
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Home</a>
+                    <a href="result-checker.html" class="text-blue-600 dark:text-blue-400 font-medium">Result Checker</a>
+                    <a href="calculators.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Calculators</a>
+                    <a href="ipo-luck.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">IPO Luck</a>
+                    <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)" class="text-2xl focus:outline-none" aria-label="Toggle dark mode">
+                        <span x-show="!darkMode">🌙</span>
+                        <span x-show="darkMode">☀️</span>
+                    </button>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center space-x-2">
+                    <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)" class="text-2xl focus:outline-none" aria-label="Toggle dark mode">
+                        <span x-show="!darkMode">🌙</span>
+                        <span x-show="darkMode">☀️</span>
+                    </button>
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="p-2 rounded-md text-gray-700 dark:text-gray-300 focus:outline-none" aria-label="Toggle menu">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95" class="md:hidden pb-4">
+                <div class="flex flex-col space-y-2">
+                    <a href="index.html" class="px-3 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">Home</a>
+                    <a href="result-checker.html" class="px-3 py-2 rounded-md text-blue-600 dark:text-blue-400 font-medium">Result Checker</a>
+                    <a href="calculators.html" class="px-3 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">Calculators</a>
+                    <a href="ipo-luck.html" class="px-3 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">IPO Luck</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8" x-data="resultChecker()" x-init="init()">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">Bulk IPO Result Checker</h1>
+            <p class="text-gray-600 dark:text-gray-400">Check multiple BOID numbers at once. Paste up to 10 BOIDs separated by commas, spaces, or new lines.</p>
+        </div>
+
+        <!-- Input Form -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100">
+            <label for="boid-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Enter BOID Numbers (max 10)
+            </label>
+            <textarea 
+                id="boid-input"
+                x-model="boidInput"
+                @input="validateInput()"
+                rows="6"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 resize-none"
+                placeholder="12345678901234, 23456789012345&#10;34567890123456&#10;Or paste one per line..."
+            ></textarea>
+            <div class="flex justify-between items-center mt-2">
+                <p class="text-xs text-gray-500 dark:text-gray-400" x-text="'BOIDs entered: ' + (validatedBoids.length) + ' / 10'"></p>
+                <p class="text-xs text-red-500 dark:text-red-400" x-show="error" x-text="error"></p>
+            </div>
+            <button 
+                @click="checkResults()"
+                :disabled="validatedBoids.length === 0 || checking"
+                class="w-full mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+            >
+                <span x-show="!checking">Check All Results</span>
+                <span x-show="checking" class="flex items-center">
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Checking...
+                </span>
+            </button>
+        </div>
+
+        <!-- Adsterra Social Bar -->
+        <div class="mb-6 text-center">
+            <!-- Adsterra Social Bar -->
+            <div class="bg-gray-200 dark:bg-gray-700 rounded-lg h-20 flex items-center justify-center text-gray-500 dark:text-gray-400 text-sm">
+                Adsterra Social Bar
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div x-show="results.length > 0" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-4" x-transition:enter-end="opacity-100 transform translate-y-0" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white">Results</h2>
+                <div class="flex flex-wrap gap-2">
+                    <button 
+                        @click="copyResults()"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors flex items-center"
+                    >
+                        <span class="mr-2">📋</span>
+                        Copy Results as Text
+                    </button>
+                    <button 
+                        @click="shareAsImage()"
+                        :disabled="sharing"
+                        class="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center"
+                    >
+                        <span class="mr-2">🖼️</span>
+                        <span x-show="!sharing">Share as Image</span>
+                        <span x-show="sharing">Generating...</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th class="px-4 py-3 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">BOID</th>
+                            <th class="px-4 py-3 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Company</th>
+                            <th class="px-4 py-3 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Allotted Kitta</th>
+                            <th class="px-4 py-3 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <template x-for="result in results" :key="result.boid">
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-100 font-mono" x-text="result.boid"></td>
+                                <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300" x-text="result.company || 'Not Found'"></td>
+                                <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-100 font-semibold" x-text="result.kitta || 0"></td>
+                                <td class="px-4 py-3 text-sm">
+                                    <span x-show="result.kitta > 0" class="inline-flex items-center text-green-600 dark:text-green-400">
+                                        <span class="mr-1">✅</span>
+                                        <span>Allotted</span>
+                                    </span>
+                                    <span x-show="result.kitta === 0 || !result.kitta" class="inline-flex items-center text-red-600 dark:text-red-400">
+                                        <span class="mr-1">❌</span>
+                                        <span>Not Allotted</span>
+                                    </span>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- CORS Error State -->
+        <div x-show="fetchError && corsError" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6 mb-6">
+            <p class="text-yellow-800 dark:text-yellow-300 font-bold mb-3 text-lg">⚠️ CORS Error: Local File Access Issue</p>
+            <p class="text-gray-700 dark:text-gray-300 mb-4">You're opening the HTML file directly from your file system. Use a local web server to fix this.</p>
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 mb-4 text-left">
+                <p class="font-semibold text-gray-900 dark:text-white mb-2">Quick Fix:</p>
+                <code class="block bg-gray-100 dark:bg-gray-700 p-2 rounded text-xs mb-2">python -m http.server 8000</code>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Then open: <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">http://localhost:8000</code></p>
+            </div>
+            <button @click="init()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Try Again</button>
+        </div>
+
+        <!-- General Error State -->
+        <div x-show="fetchError && !corsError" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 text-center mb-6">
+            <p class="text-red-600 dark:text-red-400 font-medium mb-2">⚠️ Data Update in Progress</p>
+            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Please try refreshing the page in a moment.</p>
+            <button @click="init()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Refresh</button>
+        </div>
+
+        <!-- Share Image Container (Hidden, for html2canvas) -->
+        <div id="share-image-container" class="hidden fixed -left-[9999px]">
+            <div class="bg-white p-8 w-[800px]">
+                <div class="text-center mb-6">
+                    <h1 class="text-3xl font-bold text-blue-600 mb-2">Nepal IPO Hub</h1>
+                    <p class="text-gray-600 text-sm">IPO Result Checker</p>
+                </div>
+                <div id="share-results-content" class="space-y-2"></div>
+                <div class="mt-6 pt-6 border-t border-gray-200 text-center">
+                    <p class="text-sm text-gray-500">nepalipohub.pages.dev</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <p class="text-sm text-gray-600 dark:text-gray-400 text-center">
+                <strong>Disclaimer:</strong> Not financial advice. Data from public sources. Always verify with official sources before making investment decisions.
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-500 text-center mt-2">
+                © 2024 Nepal IPO Hub. Free tools for Nepal investors.
+            </p>
+        </div>
+    </footer>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+    <script>
+        function resultChecker() {
+            return {
+                boidInput: '',
+                validatedBoids: [],
+                results: [],
+                checking: false,
+                sharing: false,
+                error: '',
+                fetchError: false,
+                corsError: false,
+                resultsData: {},
+
+                async init() {
+                    await this.fetchData();
+                },
+
+                async fetchData() {
+                    try {
+                        const response = await fetch('./db/ipo-data.json');
+                        if (!response.ok) throw new Error('Failed to fetch data');
+                        const data = await response.json();
+                        this.resultsData = data.results || {};
+                        this.fetchError = false;
+                        this.corsError = false;
+                    } catch (err) {
+                        console.error('Error fetching results data:', err);
+                        // Check if it's a CORS error (file:// protocol)
+                        if (err.message.includes('Failed to fetch') || err.name === 'TypeError' || window.location.protocol === 'file:') {
+                            this.corsError = true;
+                        }
+                        this.fetchError = true;
+                    }
+                },
+
+                validateInput() {
+                    this.error = '';
+                    if (!this.boidInput.trim()) {
+                        this.validatedBoids = [];
+                        return;
+                    }
+
+                    // Split by comma, space, or newline, then trim and filter
+                    const boids = this.boidInput
+                        .split(/[,\s\n]+/)
+                        .map(boid => boid.trim())
+                        .filter(boid => boid.length > 0);
+
+                    // Validate BOID format (should be 14 digits)
+                    const validBoids = [];
+                    const invalidBoids = [];
+
+                    boids.forEach(boid => {
+                        if (/^\d{14}$/.test(boid)) {
+                            validBoids.push(boid);
+                        } else if (boid.length > 0) {
+                            invalidBoids.push(boid);
+                        }
+                    });
+
+                    if (invalidBoids.length > 0) {
+                        this.error = `Invalid BOID format: ${invalidBoids.slice(0, 3).join(', ')}${invalidBoids.length > 3 ? '...' : ''}. BOID must be 14 digits.`;
+                    }
+
+                    // Limit to 10 BOIDs
+                    if (validBoids.length > 10) {
+                        this.validatedBoids = validBoids.slice(0, 10);
+                        this.error = 'Maximum 10 BOIDs allowed. Only first 10 will be checked.';
+                    } else {
+                        this.validatedBoids = validBoids;
+                    }
+                },
+
+                async checkResults() {
+                    if (this.validatedBoids.length === 0) return;
+
+                    this.checking = true;
+                    this.results = [];
+
+                    // Simulate API delay for better UX
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    this.results = this.validatedBoids.map(boid => {
+                        const result = this.resultsData[boid];
+                        return {
+                            boid: boid,
+                            company: result ? result.company : null,
+                            kitta: result ? result.kitta : 0
+                        };
+                    });
+
+                    this.checking = false;
+                },
+
+                async copyResults() {
+                    if (this.results.length === 0) return;
+
+                    let text = 'IPO Results from Nepal IPO Hub\n';
+                    text += '='.repeat(40) + '\n\n';
+
+                    this.results.forEach(result => {
+                        text += `BOID: ${result.boid}\n`;
+                        text += `Company: ${result.company || 'Not Found'}\n`;
+                        text += `Allotted Kitta: ${result.kitta || 0}\n`;
+                        text += `Status: ${result.kitta > 0 ? '✅ Allotted' : '❌ Not Allotted'}\n`;
+                        text += '-'.repeat(40) + '\n';
+                    });
+
+                    text += '\nCheck your results at: nepalipohub.pages.dev';
+
+                    try {
+                        await navigator.clipboard.writeText(text);
+                        // Show success feedback (you could add a toast notification here)
+                        alert('Results copied to clipboard!');
+                    } catch (err) {
+                        console.error('Failed to copy:', err);
+                        alert('Failed to copy. Please try again.');
+                    }
+                },
+
+                async shareAsImage() {
+                    if (this.results.length === 0) return;
+
+                    this.sharing = true;
+
+                    try {
+                        const container = document.getElementById('share-image-container');
+                        const contentDiv = document.getElementById('share-results-content');
+
+                        // Build results HTML for image
+                        let html = '';
+                        this.results.forEach(result => {
+                            html += `
+                                <div class="flex justify-between items-center p-3 border-b border-gray-200">
+                                    <div>
+                                        <p class="font-semibold text-gray-900">${result.boid}</p>
+                                        <p class="text-sm text-gray-600">${result.company || 'Not Found'}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-bold text-lg ${result.kitta > 0 ? 'text-green-600' : 'text-red-600'}">
+                                            ${result.kitta > 0 ? '✅ ' + result.kitta + ' Kitta' : '❌ Not Allotted'}
+                                        </p>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        contentDiv.innerHTML = html;
+
+                        // Wait for rendering
+                        await new Promise(resolve => setTimeout(resolve, 100));
+
+                        // Generate canvas
+                        const canvas = await html2canvas(container, {
+                            backgroundColor: '#ffffff',
+                            scale: 2,
+                            logging: false
+                        });
+
+                        // Download image
+                        const link = document.createElement('a');
+                        link.download = `ipo-results-${Date.now()}.png`;
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+
+                        this.sharing = false;
+                    } catch (err) {
+                        console.error('Failed to generate image:', err);
+                        alert('Failed to generate image. Please try again.');
+                        this.sharing = false;
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+

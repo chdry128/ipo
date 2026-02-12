@@ -1,0 +1,625 @@
+<!-- FILENAME: /calculators.html -->
+<!DOCTYPE html>
+<html lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches) }" x-bind:class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free investment calculators for Nepal stock market: SIP calculator, profit/loss calculator, and average cost calculator. Professional tools for investors.">
+    <meta name="keywords" content="Nepal stock calculator, SIP calculator, profit loss calculator, average cost calculator, Nepal investment tools">
+    <meta property="og:title" content="Investment Calculators - Nepal IPO Hub">
+    <meta property="og:description" content="Free calculators for Nepal investors: SIP, profit/loss, and average cost. Professional investment tools.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://nepalipohub.pages.dev/og-image.png">
+    <meta property="og:url" content="https://nepalipohub.pages.dev/calculators.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>Investment Calculators - Nepal IPO Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 bg-white dark:bg-gray-800 shadow-md transition-colors duration-200" x-data="{ mobileMenuOpen: false }">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-xl font-bold text-blue-600 dark:text-blue-400">Nepal IPO Hub</a>
+                </div>
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Home</a>
+                    <a href="result-checker.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Result Checker</a>
+                    <a href="calculators.html" class="text-blue-600 dark:text-blue-400 font-medium">Calculators</a>
+                    <a href="ipo-luck.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">IPO Luck</a>
+                    <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)" class="text-2xl focus:outline-none" aria-label="Toggle dark mode">
+                        <span x-show="!darkMode">🌙</span>
+                        <span x-show="darkMode">☀️</span>
+                    </button>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center space-x-2">
+                    <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)" class="text-2xl focus:outline-none" aria-label="Toggle dark mode">
+                        <span x-show="!darkMode">🌙</span>
+                        <span x-show="darkMode">☀️</span>
+                    </button>
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="p-2 rounded-md text-gray-700 dark:text-gray-300 focus:outline-none" aria-label="Toggle menu">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95" class="md:hidden pb-4">
+                <div class="flex flex-col space-y-2">
+                    <a href="index.html" class="px-3 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">Home</a>
+                    <a href="result-checker.html" class="px-3 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">Result Checker</a>
+                    <a href="calculators.html" class="px-3 py-2 rounded-md text-blue-600 dark:text-blue-400 font-medium">Calculators</a>
+                    <a href="ipo-luck.html" class="px-3 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">IPO Luck</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8" x-data="calculators()" x-init="init()">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">Investment Calculators</h1>
+            <p class="text-gray-600 dark:text-gray-400">Professional tools for Nepal stock market investors</p>
+        </div>
+
+        <!-- Calculator Accordion -->
+        <div class="space-y-4">
+            <!-- SIP Calculator -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden" x-data="{ open: false }">
+                <button 
+                    @click="open = !open"
+                    class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">SIP / Compounding Calculator</h2>
+                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 transform transition-transform" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div x-show="open" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="px-6 pb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Inputs -->
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Monthly Investment (Rs.)</label>
+                                <input 
+                                    type="number" 
+                                    x-model.number="sip.monthly"
+                                    @input="calculateSIP()"
+                                    min="0"
+                                    step="100"
+                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                                    placeholder="5000"
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Expected Annual Return (%)</label>
+                                <input 
+                                    type="number" 
+                                    x-model.number="sip.return"
+                                    @input="calculateSIP()"
+                                    min="0"
+                                    max="100"
+                                    step="0.1"
+                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                                    placeholder="12"
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Investment Period (Years)</label>
+                                <input 
+                                    type="number" 
+                                    x-model.number="sip.years"
+                                    @input="calculateSIP()"
+                                    min="1"
+                                    max="50"
+                                    step="1"
+                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                                    placeholder="10"
+                                >
+                            </div>
+                        </div>
+                        <!-- Results -->
+                        <div class="space-y-4">
+                            <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+                                <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">Final Value</div>
+                                <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" x-text="'Rs. ' + formatNumber(sip.finalValue)"></div>
+                            </div>
+                            <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
+                                <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">Total Invested</div>
+                                <div class="text-xl font-semibold text-green-600 dark:text-green-400" x-text="'Rs. ' + formatNumber(sip.totalInvested)"></div>
+                            </div>
+                            <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
+                                <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">Estimated Profit</div>
+                                <div class="text-xl font-semibold text-purple-600 dark:text-purple-400" x-text="'Rs. ' + formatNumber(sip.profit)"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Chart -->
+                    <div class="mt-6" x-show="sip.chartData.length > 0">
+                        <canvas id="sipChart" class="max-w-full"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AdSense Vignette -->
+            <div class="text-center">
+                <!-- AdSense Vignette -->
+                <div class="bg-gray-200 dark:bg-gray-700 rounded-lg h-32 flex items-center justify-center text-gray-500 dark:text-gray-400 text-sm">
+                    AdSense Vignette
+                </div>
+            </div>
+
+            <!-- Profit/Loss Calculator -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden" x-data="{ open: false }">
+                <button 
+                    @click="open = !open"
+                    class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">Profit / Loss Calculator</h2>
+                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 transform transition-transform" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div x-show="open" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="px-6 pb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Inputs -->
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Buy Price (Rs.)</label>
+                                <input 
+                                    type="number" 
+                                    x-model.number="profitLoss.buyPrice"
+                                    @input="calculateProfitLoss()"
+                                    min="0"
+                                    step="0.01"
+                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                                    placeholder="500"
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sell Price (Rs.)</label>
+                                <input 
+                                    type="number" 
+                                    x-model.number="profitLoss.sellPrice"
+                                    @input="calculateProfitLoss()"
+                                    min="0"
+                                    step="0.01"
+                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                                    placeholder="600"
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Quantity (Kitta)</label>
+                                <input 
+                                    type="number" 
+                                    x-model.number="profitLoss.quantity"
+                                    @input="calculateProfitLoss()"
+                                    min="1"
+                                    step="1"
+                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                                    placeholder="100"
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Broker Commission (%)</label>
+                                <select 
+                                    x-model.number="profitLoss.brokerPercent"
+                                    @change="calculateProfitLoss()"
+                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                                >
+                                    <option value="0.4">0.40% (Standard)</option>
+                                    <option value="0.35">0.35%</option>
+                                    <option value="0.30">0.30%</option>
+                                    <option value="0.27">0.27% (Discount)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Capital Gains Tax</label>
+                                <select 
+                                    x-model.number="profitLoss.cgt"
+                                    @change="calculateProfitLoss()"
+                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                                >
+                                    <option value="5">5% (Short-term)</option>
+                                    <option value="7.5">7.5% (Long-term)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Results Table -->
+                        <div class="space-y-2">
+                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">Buy Amount</span>
+                                    <span class="font-semibold text-gray-900 dark:text-gray-100" x-text="'Rs. ' + formatNumber(profitLoss.buyAmount)"></span>
+                                </div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">Buy Broker Commission</span>
+                                    <span class="font-semibold text-gray-900 dark:text-gray-100" x-text="'Rs. ' + formatNumber(profitLoss.buyBroker)"></span>
+                                </div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">SEBON Fee (0.015%)</span>
+                                    <span class="font-semibold text-gray-900 dark:text-gray-100" x-text="'Rs. ' + formatNumber(profitLoss.sebonFee)"></span>
+                                </div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">DP Charge</span>
+                                    <span class="font-semibold text-gray-900 dark:text-gray-100">Rs. 25</span>
+                                </div>
+                                <div class="border-t border-gray-300 dark:border-gray-600 pt-2 mt-2">
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Total Buy Cost</span>
+                                        <span class="font-bold text-gray-900 dark:text-gray-100" x-text="'Rs. ' + formatNumber(profitLoss.totalBuyCost)"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">Sell Amount</span>
+                                    <span class="font-semibold text-gray-900 dark:text-gray-100" x-text="'Rs. ' + formatNumber(profitLoss.sellAmount)"></span>
+                                </div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">Sell Broker Commission</span>
+                                    <span class="font-semibold text-gray-900 dark:text-gray-100" x-text="'Rs. ' + formatNumber(profitLoss.sellBroker)"></span>
+                                </div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">SEBON Fee (0.015%)</span>
+                                    <span class="font-semibold text-gray-900 dark:text-gray-100" x-text="'Rs. ' + formatNumber(profitLoss.sebonFeeSell)"></span>
+                                </div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">DP Charge</span>
+                                    <span class="font-semibold text-gray-900 dark:text-gray-100">Rs. 25</span>
+                                </div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">Capital Gains Tax</span>
+                                    <span class="font-semibold text-gray-900 dark:text-gray-100" x-text="'Rs. ' + formatNumber(profitLoss.cgtAmount)"></span>
+                                </div>
+                                <div class="border-t border-gray-300 dark:border-gray-600 pt-2 mt-2">
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Total Sell Receipt</span>
+                                        <span class="font-bold text-gray-900 dark:text-gray-100" x-text="'Rs. ' + formatNumber(profitLoss.totalSellReceipt)"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4" x-show="profitLoss.netProfit >= 0">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium text-green-700 dark:text-green-300">Net Profit</span>
+                                    <span class="text-2xl font-bold text-green-600 dark:text-green-400" x-text="'Rs. ' + formatNumber(profitLoss.netProfit)"></span>
+                                </div>
+                            </div>
+                            <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4" x-show="profitLoss.netProfit < 0">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium text-red-700 dark:text-red-300">Net Loss</span>
+                                    <span class="text-2xl font-bold text-red-600 dark:text-red-400" x-text="'Rs. ' + formatNumber(Math.abs(profitLoss.netProfit))"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AdSense Vignette -->
+            <div class="text-center">
+                <!-- AdSense Vignette -->
+                <div class="bg-gray-200 dark:bg-gray-700 rounded-lg h-32 flex items-center justify-center text-gray-500 dark:text-gray-400 text-sm">
+                    AdSense Vignette
+                </div>
+            </div>
+
+            <!-- Average Cost Calculator -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden" x-data="{ open: false }">
+                <button 
+                    @click="open = !open"
+                    class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">Average Cost Calculator (WACC)</h2>
+                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 transform transition-transform" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div x-show="open" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="px-6 pb-6">
+                    <div class="space-y-4">
+                        <!-- Dynamic Rows -->
+                        <div class="space-y-3">
+                            <template x-for="(row, index) in averageCost.rows" :key="index">
+                                <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                                    <div class="flex-1 grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Kitta</label>
+                                            <input 
+                                                type="number" 
+                                                x-model.number="row.kitta"
+                                                @input="calculateAverageCost()"
+                                                min="1"
+                                                step="1"
+                                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm"
+                                                placeholder="100"
+                                            >
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Price (Rs.)</label>
+                                            <input 
+                                                type="number" 
+                                                x-model.number="row.price"
+                                                @input="calculateAverageCost()"
+                                                min="0"
+                                                step="0.01"
+                                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm"
+                                                placeholder="500"
+                                            >
+                                        </div>
+                                    </div>
+                                    <button 
+                                        @click="removeRow(index)"
+                                        x-show="averageCost.rows.length > 1"
+                                        class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm"
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                        <button 
+                            @click="addRow()"
+                            class="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                        >
+                            + Add Row
+                        </button>
+                        <!-- Result -->
+                        <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6 mt-6">
+                            <div class="text-center">
+                                <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">Weighted Average Cost</div>
+                                <div class="text-3xl font-bold text-blue-600 dark:text-blue-400" x-text="'Rs. ' + formatNumber(averageCost.weightedAvg)"></div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                    Total Kitta: <span class="font-semibold" x-text="formatNumber(averageCost.totalKitta)"></span> | 
+                                    Total Value: <span class="font-semibold" x-text="'Rs. ' + formatNumber(averageCost.totalValue)"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <p class="text-sm text-gray-600 dark:text-gray-400 text-center">
+                <strong>Disclaimer:</strong> Not financial advice. Data from public sources. Always verify with official sources before making investment decisions.
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-500 text-center mt-2">
+                © 2024 Nepal IPO Hub. Free tools for Nepal investors.
+            </p>
+        </div>
+    </footer>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+    <script>
+        function calculators() {
+            return {
+                sipChart: null,
+                sip: {
+                    monthly: 5000,
+                    return: 12,
+                    years: 10,
+                    finalValue: 0,
+                    totalInvested: 0,
+                    profit: 0,
+                    chartData: []
+                },
+                profitLoss: {
+                    buyPrice: 500,
+                    sellPrice: 600,
+                    quantity: 100,
+                    brokerPercent: 0.4,
+                    cgt: 5,
+                    buyAmount: 0,
+                    buyBroker: 0,
+                    sebonFee: 0,
+                    totalBuyCost: 0,
+                    sellAmount: 0,
+                    sellBroker: 0,
+                    sebonFeeSell: 0,
+                    cgtAmount: 0,
+                    totalSellReceipt: 0,
+                    netProfit: 0
+                },
+                averageCost: {
+                    rows: [
+                        { kitta: 100, price: 500 },
+                        { kitta: 50, price: 550 }
+                    ],
+                    weightedAvg: 0,
+                    totalKitta: 0,
+                    totalValue: 0
+                },
+
+                init() {
+                    this.calculateSIP();
+                    this.calculateProfitLoss();
+                    this.calculateAverageCost();
+                },
+
+                calculateSIP() {
+                    if (!this.sip.monthly || !this.sip.return || !this.sip.years) {
+                        this.sip.finalValue = 0;
+                        this.sip.totalInvested = 0;
+                        this.sip.profit = 0;
+                        this.sip.chartData = [];
+                        if (this.sipChart) {
+                            this.sipChart.destroy();
+                            this.sipChart = null;
+                        }
+                        return;
+                    }
+
+                    const monthlyRate = this.sip.return / 100 / 12;
+                    const months = this.sip.years * 12;
+                    const monthlyInvestment = this.sip.monthly;
+
+                    // Future value of annuity formula: FV = P * (((1 + r)^n - 1) / r)
+                    this.sip.finalValue = monthlyInvestment * (((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate));
+                    this.sip.totalInvested = monthlyInvestment * months;
+                    this.sip.profit = this.sip.finalValue - this.sip.totalInvested;
+
+                    // Generate chart data
+                    this.sip.chartData = [];
+                    let accumulated = 0;
+                    for (let i = 0; i <= months; i += Math.max(1, Math.floor(months / 20))) {
+                        accumulated = monthlyInvestment * (((Math.pow(1 + monthlyRate, i) - 1) / monthlyRate));
+                        this.sip.chartData.push({
+                            month: i,
+                            value: accumulated,
+                            invested: monthlyInvestment * i
+                        });
+                    }
+
+                    // Update chart
+                    this.$nextTick(() => {
+                        this.updateSIPChart();
+                    });
+                },
+
+                updateSIPChart() {
+                    const ctx = document.getElementById('sipChart');
+                    if (!ctx || this.sip.chartData.length === 0) return;
+
+                    if (this.sipChart) {
+                        this.sipChart.destroy();
+                    }
+
+                    const isDark = document.documentElement.classList.contains('dark');
+                    const textColor = isDark ? '#e5e7eb' : '#374151';
+                    const gridColor = isDark ? '#374151' : '#e5e7eb';
+
+                    this.sipChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: this.sip.chartData.map(d => d.month + 'M'),
+                            datasets: [
+                                {
+                                    label: 'Investment Value',
+                                    data: this.sip.chartData.map(d => d.value),
+                                    borderColor: '#3b82f6',
+                                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                    fill: true,
+                                    tension: 0.4
+                                },
+                                {
+                                    label: 'Total Invested',
+                                    data: this.sip.chartData.map(d => d.invested),
+                                    borderColor: '#10b981',
+                                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                    fill: true,
+                                    tension: 0.4
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: {
+                                legend: {
+                                    labels: { color: textColor }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    ticks: { color: textColor },
+                                    grid: { color: gridColor }
+                                },
+                                y: {
+                                    ticks: { 
+                                        color: textColor,
+                                        callback: function(value) {
+                                            return 'Rs. ' + (value / 1000).toFixed(0) + 'K';
+                                        }
+                                    },
+                                    grid: { color: gridColor }
+                                }
+                            }
+                        }
+                    });
+                },
+
+                calculateProfitLoss() {
+                    if (!this.profitLoss.buyPrice || !this.profitLoss.sellPrice || !this.profitLoss.quantity) {
+                        return;
+                    }
+
+                    // Buy side
+                    this.profitLoss.buyAmount = this.profitLoss.buyPrice * this.profitLoss.quantity;
+                    this.profitLoss.buyBroker = this.profitLoss.buyAmount * (this.profitLoss.brokerPercent / 100);
+                    this.profitLoss.sebonFee = this.profitLoss.buyAmount * 0.00015; // 0.015%
+                    this.profitLoss.totalBuyCost = this.profitLoss.buyAmount + this.profitLoss.buyBroker + this.profitLoss.sebonFee + 25; // DP charge
+
+                    // Sell side
+                    this.profitLoss.sellAmount = this.profitLoss.sellPrice * this.profitLoss.quantity;
+                    this.profitLoss.sellBroker = this.profitLoss.sellAmount * (this.profitLoss.brokerPercent / 100);
+                    this.profitLoss.sebonFeeSell = this.profitLoss.sellAmount * 0.00015; // 0.015%
+                    const profitBeforeTax = this.profitLoss.sellAmount - this.profitLoss.totalBuyCost - this.profitLoss.sellBroker - this.profitLoss.sebonFeeSell - 25;
+                    this.profitLoss.cgtAmount = profitBeforeTax > 0 ? profitBeforeTax * (this.profitLoss.cgt / 100) : 0;
+                    this.profitLoss.totalSellReceipt = this.profitLoss.sellAmount - this.profitLoss.sellBroker - this.profitLoss.sebonFeeSell - 25 - this.profitLoss.cgtAmount;
+
+                    // Net profit/loss
+                    this.profitLoss.netProfit = this.profitLoss.totalSellReceipt - this.profitLoss.totalBuyCost;
+                },
+
+                calculateAverageCost() {
+                    let totalValue = 0;
+                    let totalKitta = 0;
+
+                    this.averageCost.rows.forEach(row => {
+                        if (row.kitta && row.price) {
+                            totalValue += row.kitta * row.price;
+                            totalKitta += row.kitta;
+                        }
+                    });
+
+                    this.averageCost.totalKitta = totalKitta;
+                    this.averageCost.totalValue = totalValue;
+                    this.averageCost.weightedAvg = totalKitta > 0 ? totalValue / totalKitta : 0;
+                },
+
+                addRow() {
+                    this.averageCost.rows.push({ kitta: 0, price: 0 });
+                },
+
+                removeRow(index) {
+                    if (this.averageCost.rows.length > 1) {
+                        this.averageCost.rows.splice(index, 1);
+                        this.calculateAverageCost();
+                    }
+                },
+
+                formatNumber(num) {
+                    if (!num && num !== 0) return '0';
+                    return Math.round(num).toLocaleString('en-US');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+

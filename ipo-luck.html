@@ -1,0 +1,341 @@
+<!-- FILENAME: /ipo-luck.html -->
+<!DOCTYPE html>
+<html lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches) }" x-bind:class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="IPO Luck Meter - Calculate your probability of getting IPO allotment in Nepal. Check your chances with our unique luck calculator.">
+    <meta name="keywords" content="IPO luck calculator, IPO probability, Nepal IPO chance, IPO allotment probability">
+    <meta property="og:title" content="IPO Luck Meter - Nepal IPO Hub">
+    <meta property="og:description" content="Calculate your probability of getting IPO allotment. Check your luck with our unique meter tool.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://nepalipohub.pages.dev/og-image.png">
+    <meta property="og:url" content="https://nepalipohub.pages.dev/ipo-luck.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>IPO Luck Meter - Nepal IPO Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .luck-meter {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 0 auto;
+        }
+        .luck-meter-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            background: conic-gradient(
+                from 0deg,
+                #ef4444 0deg 120deg,
+                #f59e0b 120deg 240deg,
+                #10b981 240deg 360deg
+            );
+            padding: 8px;
+        }
+        .luck-meter-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .dark .luck-meter-inner {
+            background: #1f2937;
+        }
+        .luck-meter-needle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 45%;
+            background: #1f2937;
+            transform-origin: bottom center;
+            transform: translateX(-50%) translateY(-100%) rotate(0deg);
+            transition: transform 1s ease-out;
+            border-radius: 2px;
+        }
+        .dark .luck-meter-needle {
+            background: #f3f4f6;
+        }
+        .luck-meter-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 24px;
+            height: 24px;
+            background: #1f2937;
+            border-radius: 50%;
+            z-index: 10;
+        }
+        .dark .luck-meter-center {
+            background: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 bg-white dark:bg-gray-800 shadow-md transition-colors duration-200" x-data="{ mobileMenuOpen: false }">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-xl font-bold text-blue-600 dark:text-blue-400">Nepal IPO Hub</a>
+                </div>
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Home</a>
+                    <a href="result-checker.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Result Checker</a>
+                    <a href="calculators.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Calculators</a>
+                    <a href="ipo-luck.html" class="text-blue-600 dark:text-blue-400 font-medium">IPO Luck</a>
+                    <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)" class="text-2xl focus:outline-none" aria-label="Toggle dark mode">
+                        <span x-show="!darkMode">🌙</span>
+                        <span x-show="darkMode">☀️</span>
+                    </button>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center space-x-2">
+                    <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)" class="text-2xl focus:outline-none" aria-label="Toggle dark mode">
+                        <span x-show="!darkMode">🌙</span>
+                        <span x-show="darkMode">☀️</span>
+                    </button>
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="p-2 rounded-md text-gray-700 dark:text-gray-300 focus:outline-none" aria-label="Toggle menu">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95" class="md:hidden pb-4">
+                <div class="flex flex-col space-y-2">
+                    <a href="index.html" class="px-3 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">Home</a>
+                    <a href="result-checker.html" class="px-3 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">Result Checker</a>
+                    <a href="calculators.html" class="px-3 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">Calculators</a>
+                    <a href="ipo-luck.html" class="px-3 py-2 rounded-md text-blue-600 dark:text-blue-400 font-medium">IPO Luck</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8" x-data="ipoLuck()" x-init="init()">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">IPO Luck Meter</h1>
+            <p class="text-gray-600 dark:text-gray-400">Calculate your probability of getting IPO allotment</p>
+        </div>
+
+        <!-- Input Form -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Total Applicants</label>
+                    <input 
+                        type="number" 
+                        x-model.number="totalApplicants"
+                        @input="calculateLuck()"
+                        min="1"
+                        step="1"
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                        placeholder="100000"
+                    >
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Total Shares Issued</label>
+                    <input 
+                        type="number" 
+                        x-model.number="totalShares"
+                        @input="calculateLuck()"
+                        min="1"
+                        step="1"
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                        placeholder="1000000"
+                    >
+                </div>
+            </div>
+        </div>
+
+        <!-- Luck Meter Display -->
+        <div x-show="luckChance > 0" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 mb-6">
+            <div class="text-center">
+                <!-- Circular Meter -->
+                <div class="luck-meter mb-6">
+                    <div class="luck-meter-circle">
+                        <div class="luck-meter-inner">
+                            <div class="text-4xl font-bold mb-2" 
+                                 :class="{
+                                     'text-red-600 dark:text-red-400': luckChance >= 100,
+                                     'text-yellow-600 dark:text-yellow-400': luckChance >= 20 && luckChance < 100,
+                                     'text-green-600 dark:text-green-400': luckChance < 20
+                                 }"
+                                 x-text="'1 in ' + luckChance"></div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Chance</div>
+                        </div>
+                        <div class="luck-meter-needle" :style="'transform: translateX(-50%) translateY(-100%) rotate(' + needleAngle + 'deg)'"></div>
+                        <div class="luck-meter-center"></div>
+                    </div>
+                </div>
+
+                <!-- Result Text -->
+                <div class="space-y-2 mb-6">
+                    <p class="text-lg text-gray-700 dark:text-gray-300">
+                        Your approximate chance of getting IPO allotment:
+                    </p>
+                    <p class="text-2xl font-bold" 
+                       :class="{
+                           'text-red-600 dark:text-red-400': luckChance >= 100,
+                           'text-yellow-600 dark:text-yellow-400': luckChance >= 20 && luckChance < 100,
+                           'text-green-600 dark:text-green-400': luckChance < 20
+                       }">
+                        <span x-text="'1 in ' + luckChance"></span>
+                    </p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                        <span x-text="'Probability: ' + (100 / luckChance).toFixed(2) + '%'"></span>
+                    </p>
+                </div>
+
+                <!-- Share Button -->
+                <button 
+                    @click="shareLuck()"
+                    class="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center mx-auto"
+                >
+                    <span class="mr-2">📤</span>
+                    Share My Luck
+                </button>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div x-show="luckChance === 0" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 text-center">
+            <div class="text-6xl mb-4">🎲</div>
+            <p class="text-gray-600 dark:text-gray-400">Enter the total applicants and shares issued to calculate your luck!</p>
+        </div>
+
+        <!-- AdSense In-Article -->
+        <div class="my-6 text-center">
+            <!-- AdSense In-Article -->
+            <div class="bg-gray-200 dark:bg-gray-700 rounded-lg h-32 flex items-center justify-center text-gray-500 dark:text-gray-400 text-sm">
+                AdSense In-Article
+            </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-2">💡 How it works</h3>
+            <p class="text-sm text-blue-800 dark:text-blue-400 mb-2">
+                This calculator estimates your probability based on the total number of applicants and shares available. 
+                The formula assumes each applicant applies for 10 kitta (standard application size).
+            </p>
+            <p class="text-xs text-blue-700 dark:text-blue-500">
+                <strong>Note:</strong> This is an approximation. Actual allotment depends on various factors including oversubscription ratio, lottery system, and other regulatory considerations.
+            </p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <p class="text-sm text-gray-600 dark:text-gray-400 text-center">
+                <strong>Disclaimer:</strong> Not financial advice. Data from public sources. Always verify with official sources before making investment decisions.
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-500 text-center mt-2">
+                © 2024 Nepal IPO Hub. Free tools for Nepal investors.
+            </p>
+        </div>
+    </footer>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+    <script>
+        function ipoLuck() {
+            return {
+                totalApplicants: 0,
+                totalShares: 0,
+                luckChance: 0,
+                needleAngle: 0,
+
+                init() {
+                    // Initialize with default values if needed
+                },
+
+                calculateLuck() {
+                    if (!this.totalApplicants || !this.totalShares || this.totalApplicants <= 0 || this.totalShares <= 0) {
+                        this.luckChance = 0;
+                        this.needleAngle = 0;
+                        return;
+                    }
+
+                    // Calculate: 1 in X chance = Math.round((applicants / (shares / 10)))
+                    // Assuming each applicant applies for 10 kitta
+                    const sharesPerApplicant = 10;
+                    const totalKittaAvailable = this.totalShares / sharesPerApplicant;
+                    this.luckChance = Math.round(this.totalApplicants / totalKittaAvailable);
+
+                    // Ensure minimum of 1
+                    if (this.luckChance < 1) {
+                        this.luckChance = 1;
+                    }
+
+                    // Calculate needle angle (0-360 degrees)
+                    // Red zone: 0-120deg (1 in 100+), Yellow: 120-240deg (1 in 20-100), Green: 240-360deg (1 in <20)
+                    if (this.luckChance >= 100) {
+                        // Red zone: map 1 in 100+ to 0-120 degrees
+                        const maxChance = 500; // Assume max is 1 in 500
+                        const normalized = Math.min(this.luckChance / maxChance, 1);
+                        this.needleAngle = normalized * 120;
+                    } else if (this.luckChance >= 20) {
+                        // Yellow zone: map 1 in 20-100 to 120-240 degrees
+                        const normalized = (this.luckChance - 20) / 80; // 0 to 1
+                        this.needleAngle = 120 + (normalized * 120);
+                    } else {
+                        // Green zone: map 1 in <20 to 240-360 degrees
+                        const normalized = (this.luckChance - 1) / 19; // 0 to 1
+                        this.needleAngle = 240 + (normalized * 120);
+                    }
+                },
+
+                async shareLuck() {
+                    if (this.luckChance === 0) return;
+
+                    const text = `My luck for IPO: 1 in ${this.luckChance}! Check at nepalipohub.pages.dev`;
+
+                    try {
+                        await navigator.clipboard.writeText(text);
+                        // Show success feedback
+                        alert('Luck result copied to clipboard! Share it with your friends.');
+                    } catch (err) {
+                        console.error('Failed to copy:', err);
+                        // Fallback: show text in alert
+                        alert(`Share this: ${text}`);
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+

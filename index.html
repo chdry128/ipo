@@ -1,0 +1,447 @@
+<!-- FILENAME: /index.html -->
+<!DOCTYPE html>
+<html lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches) }" x-bind:class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Nepal IPO Hub - Live IPO dashboard with real-time updates, IPO status tracking, and investment tools for Nepal stock market investors.">
+    <meta name="keywords" content="Nepal IPO, stock market, IPO dashboard, Nepal stock exchange, IPO tracker">
+    <meta property="og:title" content="Nepal IPO Hub - Live IPO Dashboard">
+    <meta property="og:description" content="Track all active IPOs in Nepal. Check IPO status, dates, and predicted opening prices. Free tools for Nepal investors.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://nepalipohub.pages.dev/og-image.png">
+    <meta property="og:url" content="https://nepalipohub.pages.dev">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>Nepal IPO Hub - Live IPO Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .marquee {
+            animation: marquee 30s linear infinite;
+        }
+        .marquee:hover {
+            animation-play-state: paused;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 bg-white dark:bg-gray-800 shadow-md transition-colors duration-200" x-data="{ mobileMenuOpen: false }">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-xl font-bold text-blue-600 dark:text-blue-400">Nepal IPO Hub</a>
+                </div>
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="text-blue-600 dark:text-blue-400 font-medium">Home</a>
+                    <a href="result-checker.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Result Checker</a>
+                    <a href="calculators.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Calculators</a>
+                    <a href="ipo-luck.html" class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">IPO Luck</a>
+                    <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)" class="text-2xl focus:outline-none" aria-label="Toggle dark mode">
+                        <span x-show="!darkMode">🌙</span>
+                        <span x-show="darkMode">☀️</span>
+                    </button>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center space-x-2">
+                    <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)" class="text-2xl focus:outline-none" aria-label="Toggle dark mode">
+                        <span x-show="!darkMode">🌙</span>
+                        <span x-show="darkMode">☀️</span>
+                    </button>
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="p-2 rounded-md text-gray-700 dark:text-gray-300 focus:outline-none" aria-label="Toggle menu">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95" class="md:hidden pb-4">
+                <div class="flex flex-col space-y-2">
+                    <a href="index.html" class="px-3 py-2 rounded-md text-blue-600 dark:text-blue-400 font-medium">Home</a>
+                    <a href="result-checker.html" class="px-3 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">Result Checker</a>
+                    <a href="calculators.html" class="px-3 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">Calculators</a>
+                    <a href="ipo-luck.html" class="px-3 py-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">IPO Luck</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" x-data="ipoDashboard()" x-init="init()">
+        <!-- Hero Section -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">Live IPO Dashboard</h1>
+            <p class="text-gray-600 dark:text-gray-400">Track all active IPOs in Nepal. Real-time status and predictions.</p>
+        </div>
+
+        <!-- News Ticker -->
+        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6 overflow-hidden relative">
+            <div class="flex items-center">
+                <span class="text-blue-600 dark:text-blue-400 font-semibold mr-4 whitespace-nowrap">📢 Latest:</span>
+                <div class="flex-1 overflow-hidden">
+                    <div class="marquee whitespace-nowrap text-gray-700 dark:text-gray-300" x-text="newsTicker || 'Loading news...'"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AdSense Leaderboard 728x90 -->
+        <div class="mb-6 text-center">
+            <!-- AdSense Leaderboard 728x90 -->
+            <div class="bg-gray-200 dark:bg-gray-700 rounded-lg h-24 flex items-center justify-center text-gray-500 dark:text-gray-400 text-sm">
+                AdSense Leaderboard 728x90
+            </div>
+        </div>
+
+        <!-- Loading Skeleton -->
+        <template x-if="loading">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <template x-for="i in 6">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 animate-pulse">
+                        <div class="h-6 bg-gray-300 dark:bg-gray-700 rounded mb-4"></div>
+                        <div class="h-4 bg-gray-300 dark:bg-gray-700 rounded mb-2"></div>
+                        <div class="h-4 bg-gray-300 dark:bg-gray-700 rounded mb-4"></div>
+                        <div class="h-2 bg-gray-300 dark:bg-gray-700 rounded"></div>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <!-- Open IPOs Section -->
+        <div x-show="!loading && openIPOs.length > 0" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-4" x-transition:enter-end="opacity-100 transform translate-y-0" class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                <span class="mr-2">🟢</span>
+                Open Now
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <template x-for="ipo in openIPOs" :key="ipo.id">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-6" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-xs font-semibold px-3 py-1 rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" x-text="ipo.status"></span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400" x-text="ipo.sector"></span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2" x-text="ipo.name"></h3>
+                        <div class="mb-4">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Issue Price:</span>
+                            <span class="text-lg font-semibold text-blue-600 dark:text-blue-400 ml-2" x-text="'Rs. ' + ipo.price"></span>
+                        </div>
+                        <div class="space-y-2 mb-4 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">Open Date:</span>
+                                <span class="font-medium text-gray-900 dark:text-gray-100" x-text="formatDate(ipo.open_date)"></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">Close Date:</span>
+                                <span class="font-medium text-gray-900 dark:text-gray-100" x-text="formatDate(ipo.close_date)"></span>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-gray-600 dark:text-gray-400">Net Worth:</span>
+                                <span class="font-medium text-gray-900 dark:text-gray-100" x-text="formatCurrency(ipo.net_worth)"></span>
+                            </div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 mb-2">Predicted Open Range:</div>
+                            <div class="bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
+                                <div class="bg-gradient-to-r from-green-400 to-green-600 h-full rounded-full transition-all duration-500" :style="'width: ' + calculateProgress(ipo.net_worth) + '%'"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-gray-600 dark:text-gray-400 mt-1">
+                                <span x-text="formatCurrency(ipo.net_worth)"></span>
+                                <span x-text="formatCurrency(ipo.net_worth * 3)"></span>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">
+                            <span>Units:</span>
+                            <span class="font-medium text-gray-900 dark:text-gray-100 ml-2" x-text="formatNumber(ipo.units)"></span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- Upcoming IPOs Section -->
+        <div x-show="!loading && upcomingIPOs.length > 0" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-4" x-transition:enter-end="opacity-100 transform translate-y-0" class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                <span class="mr-2">🟡</span>
+                Upcoming IPOs
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <template x-for="ipo in upcomingIPOs" :key="ipo.id">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-6" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-xs font-semibold px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200" x-text="ipo.status"></span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400" x-text="ipo.sector"></span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2" x-text="ipo.name"></h3>
+                        <div class="mb-4">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Issue Price:</span>
+                            <span class="text-lg font-semibold text-blue-600 dark:text-blue-400 ml-2" x-text="'Rs. ' + ipo.price"></span>
+                        </div>
+                        <div class="space-y-2 mb-4 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">Open Date:</span>
+                                <span class="font-medium text-gray-900 dark:text-gray-100" x-text="formatDate(ipo.open_date)"></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">Close Date:</span>
+                                <span class="font-medium text-gray-900 dark:text-gray-100" x-text="formatDate(ipo.close_date)"></span>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-gray-600 dark:text-gray-400">Net Worth:</span>
+                                <span class="font-medium text-gray-900 dark:text-gray-100" x-text="formatCurrency(ipo.net_worth)"></span>
+                            </div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 mb-2">Predicted Open Range:</div>
+                            <div class="bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
+                                <div class="bg-gradient-to-r from-green-400 to-green-600 h-full rounded-full transition-all duration-500" :style="'width: ' + calculateProgress(ipo.net_worth) + '%'"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-gray-600 dark:text-gray-400 mt-1">
+                                <span x-text="formatCurrency(ipo.net_worth)"></span>
+                                <span x-text="formatCurrency(ipo.net_worth * 3)"></span>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">
+                            <span>Units:</span>
+                            <span class="font-medium text-gray-900 dark:text-gray-100 ml-2" x-text="formatNumber(ipo.units)"></span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- Closed IPOs Section (Collapsible) -->
+        <div x-show="!loading && closedIPOs.length > 0" x-data="{ showClosed: false }" class="mb-8">
+            <button @click="showClosed = !showClosed" class="w-full text-left mb-4 flex items-center justify-between p-4 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+                    <span class="mr-2">⚫</span>
+                    Closed IPOs
+                    <span class="ml-3 text-sm font-normal text-gray-500 dark:text-gray-400" x-text="'(' + closedIPOs.length + ')'"></span>
+                </h2>
+                <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 transform transition-transform" :class="{ 'rotate-180': showClosed }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+            <div x-show="showClosed" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-4" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform translate-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <template x-for="ipo in closedIPOs" :key="ipo.id">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-6 opacity-75" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100">
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="text-xs font-semibold px-3 py-1 rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200" x-text="ipo.status"></span>
+                                <span class="text-xs text-gray-500 dark:text-gray-400" x-text="ipo.sector"></span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2" x-text="ipo.name"></h3>
+                            <div class="mb-4">
+                                <span class="text-sm text-gray-600 dark:text-gray-400">Issue Price:</span>
+                                <span class="text-lg font-semibold text-blue-600 dark:text-blue-400 ml-2" x-text="'Rs. ' + ipo.price"></span>
+                            </div>
+                            <div class="space-y-2 mb-4 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600 dark:text-gray-400">Open Date:</span>
+                                    <span class="font-medium text-gray-900 dark:text-gray-100" x-text="formatDate(ipo.open_date)"></span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600 dark:text-gray-400">Close Date:</span>
+                                    <span class="font-medium text-gray-900 dark:text-gray-100" x-text="formatDate(ipo.close_date)"></span>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-gray-600 dark:text-gray-400">Net Worth:</span>
+                                    <span class="font-medium text-gray-900 dark:text-gray-100" x-text="formatCurrency(ipo.net_worth)"></span>
+                                </div>
+                            </div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">
+                                <span>Units:</span>
+                                <span class="font-medium text-gray-900 dark:text-gray-100 ml-2" x-text="formatNumber(ipo.units)"></span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <!-- CORS Error State -->
+        <div x-show="!loading && error && corsError" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6 mb-8">
+            <p class="text-yellow-800 dark:text-yellow-300 font-bold mb-3 text-lg">⚠️ CORS Error: Local File Access Issue</p>
+            <p class="text-gray-700 dark:text-gray-300 mb-4">You're opening the HTML file directly from your file system. Browsers block local file requests for security reasons.</p>
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 mb-4 text-left">
+                <p class="font-semibold text-gray-900 dark:text-white mb-2">Solution: Use a Local Web Server</p>
+                <div class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                    <p><strong>Option 1 - Python (if installed):</strong></p>
+                    <code class="block bg-gray-100 dark:bg-gray-700 p-2 rounded text-xs">python -m http.server 8000</code>
+                    <p class="mt-2">Then open: <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">http://localhost:8000</code></p>
+                    
+                    <p class="mt-4"><strong>Option 2 - Node.js (if installed):</strong></p>
+                    <code class="block bg-gray-100 dark:bg-gray-700 p-2 rounded text-xs">npx http-server -p 8000</code>
+                    <p class="mt-2">Then open: <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">http://localhost:8000</code></p>
+                    
+                    <p class="mt-4"><strong>Option 3 - VS Code:</strong></p>
+                    <p>Install "Live Server" extension and click "Go Live"</p>
+                </div>
+            </div>
+            <button @click="init()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Try Again</button>
+        </div>
+
+        <!-- General Error State -->
+        <div x-show="!loading && error && !corsError" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 text-center mb-8">
+            <p class="text-red-600 dark:text-red-400 font-medium mb-2">⚠️ Data Update in Progress</p>
+            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Please try refreshing the page in a moment.</p>
+            <button @click="init()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Refresh</button>
+        </div>
+
+        <!-- Empty State -->
+        <div x-show="!loading && !error && openIPOs.length === 0 && upcomingIPOs.length === 0 && closedIPOs.length === 0" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 text-center mb-8">
+            <p class="text-gray-600 dark:text-gray-400">No IPOs at the moment. Check back soon!</p>
+        </div>
+
+        <!-- Adsterra Sidebar 300x250 (Desktop Only) -->
+        <div class="hidden lg:block fixed right-4 top-24 w-64">
+            <div class="bg-gray-200 dark:bg-gray-700 rounded-lg h-64 flex items-center justify-center text-gray-500 dark:text-gray-400 text-sm">
+                Adsterra Sidebar 300x250
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <p class="text-sm text-gray-600 dark:text-gray-400 text-center">
+                <strong>Disclaimer:</strong> Not financial advice. Data from public sources. Always verify with official sources before making investment decisions.
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-500 text-center mt-2">
+                © 2024 Nepal IPO Hub. Free tools for Nepal investors.
+            </p>
+        </div>
+    </footer>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+    <script>
+        function ipoDashboard() {
+            return {
+                ipos: [],
+                openIPOs: [],
+                upcomingIPOs: [],
+                closedIPOs: [],
+                newsTicker: '',
+                loading: true,
+                error: false,
+                corsError: false,
+
+                async init() {
+                    await this.fetchData();
+                },
+
+                async fetchData() {
+                    this.loading = true;
+                    this.error = false;
+                    this.corsError = false;
+                    try {
+                        const response = await fetch('./db/ipo-data.json');
+                        if (!response.ok) throw new Error('Failed to fetch data');
+                        const data = await response.json();
+                        
+                        this.newsTicker = data.news_ticker || '';
+                        
+                        // Process IPOs and categorize them
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        
+                        const processedIPOs = (data.active_ipos || []).map(ipo => {
+                            const openDate = new Date(ipo.open_date);
+                            openDate.setHours(0, 0, 0, 0);
+                            const closeDate = new Date(ipo.close_date);
+                            closeDate.setHours(23, 59, 59, 999);
+
+                            let status = 'Upcoming';
+                            if (today >= openDate && today <= closeDate) {
+                                status = 'Open';
+                            } else if (today > closeDate) {
+                                status = 'Closed';
+                            }
+
+                            return {
+                                ...ipo,
+                                status: status,
+                                openDate: openDate,
+                                closeDate: closeDate
+                            };
+                        });
+
+                        // Separate into categories
+                        this.openIPOs = processedIPOs.filter(ipo => ipo.status === 'Open');
+                        this.upcomingIPOs = processedIPOs.filter(ipo => ipo.status === 'Upcoming').sort((a, b) => a.openDate - b.openDate);
+                        this.closedIPOs = processedIPOs.filter(ipo => ipo.status === 'Closed').sort((a, b) => b.closeDate - a.closeDate);
+                        
+                        // Keep all IPOs for backward compatibility
+                        this.ipos = processedIPOs;
+                    } catch (err) {
+                        console.error('Error fetching IPO data:', err);
+                        // Check if it's a CORS error (file:// protocol)
+                        if (err.message.includes('Failed to fetch') || err.name === 'TypeError' || window.location.protocol === 'file:') {
+                            this.corsError = true;
+                        }
+                        this.error = true;
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+
+                formatDate(dateString) {
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                    });
+                },
+
+                formatCurrency(amount) {
+                    if (amount >= 10000000) {
+                        return 'Rs. ' + (amount / 10000000).toFixed(2) + ' Cr';
+                    } else if (amount >= 100000) {
+                        return 'Rs. ' + (amount / 100000).toFixed(2) + ' L';
+                    }
+                    return 'Rs. ' + amount.toLocaleString();
+                },
+
+                formatNumber(num) {
+                    return num.toLocaleString();
+                },
+
+                calculateProgress(netWorth) {
+                    // Progress bar shows position in 1x to 3x range (always show some progress for visual appeal)
+                    // For simplicity, we'll show a dynamic progress based on net worth
+                    const min = netWorth;
+                    const max = netWorth * 3;
+                    // Show progress at 50% position (midpoint of range) for visual consistency
+                    return 50;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+

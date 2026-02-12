@@ -1,0 +1,172 @@
+{
+  "active_ipos": [
+    {
+      "id": "hulas-steel-2024",
+      "name": "Hulas Steel Industries Limited",
+      "sector": "Manufacturing",
+      "status": "",
+      "units": 2000000,
+      "price": 100,
+      "net_worth": 200000000,
+      "open_date": "2024-01-15",
+      "close_date": "2024-01-25"
+    },
+    {
+      "id": "nepal-life-2024",
+      "name": "Nepal Life Insurance Company Limited",
+      "sector": "Insurance",
+      "status": "",
+      "units": 5000000,
+      "price": 100,
+      "net_worth": 500000000,
+      "open_date": "2024-02-01",
+      "close_date": "2024-02-15"
+    },
+    {
+      "id": "mega-bank-2024",
+      "name": "Mega Bank Nepal Limited",
+      "sector": "Banking",
+      "status": "",
+      "units": 10000000,
+      "price": 100,
+      "net_worth": 1000000000,
+      "open_date": "2024-03-01",
+      "close_date": "2024-03-15"
+    },
+    {
+      "id": "shivam-cement-2024",
+      "name": "Shivam Cements Limited",
+      "sector": "Manufacturing",
+      "status": "",
+      "units": 3000000,
+      "price": 100,
+      "net_worth": 300000000,
+      "open_date": "2024-03-20",
+      "close_date": "2024-04-05"
+    },
+    {
+      "id": "nepal-investment-2024",
+      "name": "Nepal Investment Bank Limited",
+      "sector": "Banking",
+      "status": "",
+      "units": 8000000,
+      "price": 100,
+      "net_worth": 800000000,
+      "open_date": "2024-01-01",
+      "close_date": "2024-01-10"
+    },
+    {
+      "id": "everest-bank-2025",
+      "name": "Everest Bank Limited",
+      "sector": "Banking",
+      "status": "",
+      "units": 15000000,
+      "price": 100,
+      "net_worth": 1500000000,
+      "open_date": "2025-02-01",
+      "close_date": "2025-02-20"
+    },
+    {
+      "id": "nepal-telecom-2025",
+      "name": "Nepal Telecom Limited",
+      "sector": "Telecommunications",
+      "status": "",
+      "units": 50000000,
+      "price": 100,
+      "net_worth": 5000000000,
+      "open_date": "2025-03-15",
+      "close_date": "2026-04-05"
+    },
+    {
+      "id": "hydro-power-2025",
+      "name": "Nepal Hydro Power Development Company Limited",
+      "sector": "Energy",
+      "status": "",
+      "units": 8000000,
+      "price": 100,
+      "net_worth": 800000000,
+      "open_date": "2025-04-10",
+      "close_date": "2025-04-25"
+    },
+    {
+      "id": "agriculture-bank-2025",
+      "name": "Agriculture Development Bank Limited",
+      "sector": "Banking",
+      "status": "",
+      "units": 12000000,
+      "price": 100,
+      "net_worth": 1200000000,
+      "open_date": "2025-05-01",
+      "close_date": "2026-05-20"
+    },
+    {
+      "id": "cement-industries-2025",
+      "name": "Shree Cement Industries Limited",
+      "sector": "Manufacturing",
+      "status": "",
+      "units": 6000000,
+      "price": 100,
+      "net_worth": 600000000,
+      "open_date": "2025-06-01",
+      "close_date": "2026-06-15"
+    },
+    {
+      "id": "microfinance-2025",
+      "name": "Nepal Microfinance Development Bank Limited",
+      "sector": "Microfinance",
+      "status": "",
+      "units": 4000000,
+      "price": 100,
+      "net_worth": 400000000,
+      "open_date": "2025-07-01",
+      "close_date": "2025-07-20"
+    },
+    {
+      "id": "hotel-industries-2025",
+      "name": "Nepal Hotel Industries Limited",
+      "sector": "Hospitality",
+      "status": "",
+      "units": 3000000,
+      "price": 100,
+      "net_worth": 300000000,
+      "open_date": "2025-08-01",
+      "close_date": "2025-08-15"
+    }
+  ],
+  "news_ticker": "Hulas Steel IPO closing soon! Check now. | Nepal Life Insurance IPO opens Feb 1st | Mega Bank IPO coming in March | Always verify with official sources.",
+  "results": {
+    "12345678901234": {
+      "company": "Hulas Steel Industries Limited",
+      "kitta": 10
+    },
+    "23456789012345": {
+      "company": "Hulas Steel Industries Limited",
+      "kitta": 0
+    },
+    "34567890123456": {
+      "company": "Nepal Life Insurance Company Limited",
+      "kitta": 5
+    },
+    "45678901234567": {
+      "company": "Nepal Life Insurance Company Limited",
+      "kitta": 0
+    },
+    "56789012345678": {
+      "company": "Mega Bank Nepal Limited",
+      "kitta": 20
+    },
+    "67890123456789": {
+      "company": "Mega Bank Nepal Limited",
+      "kitta": 0
+    },
+    "78901234567890": {
+      "company": "Shivam Cements Limited",
+      "kitta": 15
+    },
+    "89012345678901": {
+      "company": "Shivam Cements Limited",
+      "kitta": 0
+    }
+  }
+}
+
